@@ -1,6 +1,6 @@
 import React from 'react'
-import { IncidentUpdate } from 'hooks/incidents'
 import styled from 'styled-components'
+import { IncidentUpdate } from 'types/incident'
 
 const DateContainer = styled.div`
     display: flex;

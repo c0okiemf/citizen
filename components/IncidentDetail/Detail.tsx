@@ -1,7 +1,7 @@
 import React from 'react'
-import { Incident } from 'hooks/incidents'
 import styled from 'styled-components'
 import { SingleIncidentUpdate } from 'components/IncidentDetail/Update'
+import { Incident } from 'types/incident'
 
 const Title = styled.div`
     color: #ffffff;

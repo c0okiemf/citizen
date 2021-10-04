@@ -4,91 +4,7 @@ import { AppError } from 'types/error'
 import { LngLatBounds } from 'mapbox-gl'
 import { INCIDENTS_LIMIT, API_URL } from 'const/api'
 import notFoundIcon from 'assets/not-found.svg'
-
-export type FetchIncidentsQueryParams = {
-    bounds?: LngLatBounds
-    fullResponse?: boolean
-    limit?: number
-}
-
-export type FetchIncidentsProps = {
-    params: FetchIncidentsQueryParams
-    searchTerm?: string
-}
-
-export type IncidentUpdate = {
-    id: string
-    displayLocation: string
-    text: string
-    time: string
-}
-
-export type Incident = {
-    title: string
-    address: string
-    hasVod?: boolean
-    key: string
-    location: string
-    neighborhood: string
-    latitude: number
-    longitude: number
-    level: number
-    previewImg: string
-    updates: IncidentUpdate[]
-    time: string
-    liveStreamersIds?: string[]
-}
-
-type RawIncidentUpdates = {
-    [key in string]: {
-        displayLocation: string
-        text: string
-        ts: number
-    }
-}
-
-export type RawIncident = {
-    title: string
-    address: string
-    hasVod: boolean
-    key: string
-    liveStreamers: {
-        [key in string]: {
-            videoStreamId: string
-        }
-    }
-    location: string
-    neighborhood: string
-    updates: RawIncidentUpdates
-    latitude: number
-    longitude: number
-    level: number
-    placeholderImageURL?: string
-    horizontalThumbnail?: string
-    preferredStream?: {
-        image?: string
-    }
-    ts: number
-}
-
-type RawSearchIncident = {
-    title: string
-    address: string
-    objectID: string
-    location: string
-    neighborhood: string
-    updates: RawIncidentUpdates
-    'ranking.level': number
-    _geoloc: { lat: number; lng: number }[]
-    ts: number
-}
-
-type FerchIncidentsResult = {
-    incidents: Incident[]
-    loading: boolean
-    error: AppError
-    refetch: () => void
-}
+import { Incident, RawIncidentUpdates, IncidentUpdate, RawIncident, RawSearchIncident } from 'types/incident'
 
 const mapParams = (
     { bounds, limit = INCIDENTS_LIMIT, fullResponse = true }: FetchIncidentsQueryParams,
@@ -134,15 +50,33 @@ export const mapIncidents = (incidents: RawIncident[]): Incident[] =>
 
 const mapSearchIncidents = (incidents: RawSearchIncident[]): Incident[] =>
     incidents?.map((incident) => {
-        const { _geoloc, objectID: key, updates: rawUpdates, ts } = incident
+        const { _geoloc, objectID: key, updates: rawUpdates, created_at } = incident
         const latitude = _geoloc[0].lat
         const longitude = _geoloc[0].lng
         const level = incident['ranking.level']
         const previewImg = notFoundIcon
         const updates = mapUpdates(rawUpdates)
-        const time = formatTime(ts)
+        const time = formatTime(created_at)
         return { ...incident, latitude, longitude, key, level, previewImg, updates, time }
     }) || []
+
+type FetchIncidentsQueryParams = {
+    bounds?: LngLatBounds
+    fullResponse?: boolean
+    limit?: number
+}
+
+type FetchIncidentsProps = {
+    params: FetchIncidentsQueryParams
+    searchTerm?: string
+}
+
+type FerchIncidentsResult = {
+    incidents: Incident[]
+    loading: boolean
+    error: AppError
+    refetch: () => void
+}
 
 export const useFetchIncidents = ({ params, searchTerm }: FetchIncidentsProps): FerchIncidentsResult => {
     const [data, setData] = useState<{ response: any; type: 'search' | 'public' }>(undefined)

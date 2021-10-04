@@ -1,14 +1,18 @@
 import React, { useMemo, useCallback } from 'react'
+import ReactDOMServer from 'react-dom/server'
 import { useState, useRef, useEffect } from 'react'
-import { useFetchIncidents, Incident } from 'hooks/incidents'
+import { useFetchIncidents } from 'hooks/incidents'
 import { Map, LngLatBounds, Marker, LngLat, NavigationControl, Popup } from 'mapbox-gl'
 import { MAPBOX_TOKEN, INCIDENTS_LIMIT } from 'const/api'
-import { DEFAULT_COORDINATES } from 'const/coordinates'
+import { DEFAULT_COORDINATES } from 'const/map'
 import { throttle } from 'lodash'
 import { useStopwatch } from 'react-timer-hook'
 import { markerStyle } from 'styles/marker'
 import { useRouter } from 'next/router'
-import { useFetchStreams, Stream } from 'hooks/streams'
+import { useFetchStreams } from 'hooks/streams'
+import { Incident, IncidentStream } from 'types/incident'
+import { MapPopup } from 'components/IncidentsList/Map/Popup'
+import { INCIDENTS_REFRESH_INTERVAL } from 'const/incident'
 
 type MakeIncidentsMapProps = {
     searchTerm?: string
@@ -19,7 +23,7 @@ type MakeIncidentsMapResult = {
     map: React.MutableRefObject<any>
     bounds: LngLatBounds
     incidents: Incident[]
-    streams: Stream[]
+    streams: IncidentStream[]
     incedentMarkerHoverId: string
     setIncedentMarkerHoverId: (id?: string) => void
 }
@@ -47,47 +51,53 @@ export const useIncidentsMap = ({ searchTerm }: MakeIncidentsMapProps): MakeInci
         [],
     )
 
-    const formatPopupContent = (title: string, address: string) => `
-        <div>
-            <div style="font-size: 14px; line-height: 17px; color: gray; font-weight: 800;">${title}</div>
-            <div style="font-size: 12px; color: #4c5159; font-weight: 400;">${address}</div>
-        </div>
-    `
+    const formatPopupContent = (title: string, address: string) =>
+        ReactDOMServer.renderToStaticMarkup(<MapPopup title={title} address={address} />)
+
+    const registerMarkerEvents = useCallback(
+        (element: HTMLDivElement, key: string) => {
+            element.addEventListener('mouseenter', () => {
+                setIncedentMarkerHoverId(key)
+            })
+            element.addEventListener('mouseleave', () => {
+                setIncedentMarkerHoverId(undefined)
+            })
+            element.addEventListener('click', () => {
+                router.push(`/detail/${key}`)
+            })
+        },
+        [router],
+    )
 
     const makeMarkers = useCallback(
         (incidents: Incident[]) => {
             for (let i = 0; i < INCIDENTS_LIMIT; i++) {
+                // Deleting existing markers and popups
                 markerElements[i]?.marker?.setPopup(undefined)
                 markerElements[i]?.marker?.remove()
+
                 const incident = incidents[i]
                 if (incident) {
                     const { longitude, latitude, level, title, address, key } = incident
+
                     const markerElement = markerElements[i]
                     const { element } = markerElement
                     element.style.cssText = markerStyle(level)
-                    const popup = new Popup({
-                        closeButton: false,
-                        closeOnClick: false,
-                    }).setHTML(formatPopupContent(title, address))
+                    const popup = new Popup({ closeButton: false, closeOnClick: false }).setHTML(
+                        formatPopupContent(title, address),
+                    )
                     const marker = new Marker({ element })
                         .setLngLat(new LngLat(longitude, latitude))
                         .setPopup(popup)
                         .addTo(map.current)
                     markerElement.marker = marker
                     markerElement.key = key
-                    element.addEventListener('mouseenter', () => {
-                        setIncedentMarkerHoverId(key)
-                    })
-                    element.addEventListener('mouseleave', () => {
-                        setIncedentMarkerHoverId(undefined)
-                    })
-                    element.addEventListener('click', () => {
-                        router.push(`/detail/${key}`)
-                    })
+
+                    registerMarkerEvents(element, key)
                 }
             }
         },
-        [markerElements, router],
+        [markerElements, registerMarkerEvents],
     )
 
     useEffect(() => {
@@ -112,19 +122,22 @@ export const useIncidentsMap = ({ searchTerm }: MakeIncidentsMapProps): MakeInci
         map.current.addControl(new NavigationControl({ showCompass: false }))
     }, [])
 
+    // Move is fired extremely often, so throttle state updates
     const throttledSetBounds = useRef(throttle(setBounds, 1000))
     map.current?.on('move', () => {
         throttledSetBounds.current(map.current?.getBounds())
     })
 
+    // Refresh every INCIDENTS_REFRESH_INTERVAL of seconds
     const { seconds, reset } = useStopwatch({ autoStart: true })
     useEffect(() => {
-        if (seconds >= 10) {
+        if (seconds >= INCIDENTS_REFRESH_INTERVAL) {
             refetch()
             reset(new Date(), true)
         }
     }, [refetch, reset, seconds])
 
+    // Refresh on user search
     useEffect(() => {
         if (searchTerm !== undefined) {
             refetch()

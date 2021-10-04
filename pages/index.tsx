@@ -1,11 +1,10 @@
 import React, { createContext, useState } from 'react'
-import { IncidentsMap } from 'components/IncidentsList/Map'
+import { IncidentsMap } from 'components/IncidentsList/Map/Map'
 import { CommonPageStyle } from 'styles/globals'
 import { IncidentsList } from 'components/IncidentsList/List'
 import { useIncidentsMap } from 'hooks/map'
 import styled from 'styled-components'
-import { Incident } from 'hooks/incidents'
-import { Stream } from 'hooks/streams'
+import { Incident, IncidentStream } from 'types/incident'
 
 const AppContainer = styled.div`
     display: flex;
@@ -28,7 +27,7 @@ const StyledIncidentsList = styled(IncidentsList)`
 
 type IncidentsContext = {
     incidents: Incident[]
-    streams: Stream[]
+    streams: IncidentStream[]
     searchTerm?: string
     incedentMarkerHoverId?: string
     applySearchTerm?: (searchTerm?: string) => void

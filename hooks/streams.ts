@@ -2,24 +2,20 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { AppError } from 'types/error'
 import { API_URL } from 'const/api'
-
-export type Stream = {
-    incidentId: string
-    hlsVodUrl: string
-}
+import { IncidentStream } from 'types/incident'
 
 type FetchStreamsProps = {
     ids: string[]
 }
 
 type FerchStreamsResult = {
-    streams: Stream[]
+    streams: IncidentStream[]
     loading: boolean
     error?: AppError
 }
 
 export const useFetchStreams = ({ ids }: FetchStreamsProps): FerchStreamsResult => {
-    const [streams, setStreams] = useState<Stream[]>([])
+    const [streams, setStreams] = useState<IncidentStream[]>([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<AppError>(undefined)
 
@@ -27,7 +23,7 @@ export const useFetchStreams = ({ ids }: FetchStreamsProps): FerchStreamsResult 
         if (ids) {
             try {
                 setLoading(true)
-                const response = await axios.get<Stream[]>(API_URL.LIVE_STREAMS, {
+                const response = await axios.get<IncidentStream[]>(API_URL.LIVE_STREAMS, {
                     params: {
                         video_stream_ids: ids.slice(10).join(','),
                         check_for_trim: true,
