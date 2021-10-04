@@ -1,9 +1,9 @@
 import React from 'react'
-import { Incident } from 'hooks/incidents'
 import styled from 'styled-components'
 import Image from 'next/image'
 import playIcon from 'assets/play.svg'
 import Link from 'next/link'
+import { Incident } from 'types/incident'
 
 type StyledSingleIncidentProps = {
     $hover: boolean
@@ -100,7 +100,7 @@ export const SingleIncident = ({
                     <IncidentNeighbourhood>{neighborhood}</IncidentNeighbourhood>
                     <IncidentAddress>{address}</IncidentAddress>
                 </div>
-                <IncidentTime>{time}</IncidentTime>
+                {time && <IncidentTime>{time}</IncidentTime>}
             </StyledSingleIncident>
         </Link>
     )

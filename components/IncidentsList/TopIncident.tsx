@@ -1,10 +1,10 @@
 import React from 'react'
-import { Incident } from 'hooks/incidents'
 import styled from 'styled-components'
 import Image from 'next/image'
 import playIcon from 'assets/play.svg'
 import Link from 'next/link'
 import { StreamPlayer } from 'components/IncidentsList/StreamPlayer'
+import { Incident } from 'types/incident'
 
 type StyledSingleIncidentProps = {
     $hover: boolean

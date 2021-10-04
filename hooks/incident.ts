@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { AppError } from 'types/error'
-import { Incident, RawIncident, mapIncidents } from './incidents'
+import { mapIncidents } from './incidents'
 import { API_URL } from 'const/api'
+import { Incident, RawIncident } from 'types/incident'
 
 type FetchIncidentProps = {
     id: string
