@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { IncidentsSearch } from 'components/IncidentsList/Search'
 import { SingleIncident } from 'components/IncidentsList/SingleIncident'
 import { IncidentsContext } from 'pages'
-import { StreamPlayer } from 'components/IncidentsList/StreamPlayer'
 import { TopIncident } from 'components/IncidentsList/TopIncident'
 
 const IncidentsContainer = styled.div`

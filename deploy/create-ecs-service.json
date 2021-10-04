@@ -1,0 +1,17 @@
+{
+    "cluster": "arn:aws:ecs:us-east-1:824267296635:cluster/backends",
+    "serviceName": "citizen",
+    "taskDefinition": "citizen",
+    "loadBalancers": [
+        {
+            "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:824267296635:loadbalancer/app/main/d35c6836832b9896",
+            "containerName": "citizen",
+            "containerPort": 3000
+        }
+    ],
+    "desiredCount": 1,
+    "deploymentConfiguration": {
+        "maximumPercent": 200,
+        "minimumHealthyPercent": 100
+    }
+}
