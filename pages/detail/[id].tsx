@@ -8,7 +8,7 @@ const IncidentDetailPage = (): JSX.Element => {
     const router = useRouter()
     const { id } = router.query
 
-    const { incident } = useFetchIncident({ id })
+    const { incident } = useFetchIncident({ id: id as string })
 
     return (
         <>
