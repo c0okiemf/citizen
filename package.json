@@ -1,20 +1,38 @@
 {
-  "name": "citizen",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "11.1.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
-  },
-  "devDependencies": {
-    "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2"
-  }
+    "name": "citizen",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "axios": "^0.22.0",
+        "lodash": "^4.17.21",
+        "mapbox-gl": "^2.5.0",
+        "next": "11.1.2",
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
+        "react-player": "^2.9.0",
+        "react-timer-hook": "^3.0.5",
+        "styled-components": "^5.3.1"
+    },
+    "devDependencies": {
+        "@types/mapbox-gl": "^2.4.2",
+        "@types/node": "^16.10.2",
+        "@types/react": "^17.0.26",
+        "@types/styled-components": "^5.1.14",
+        "@typescript-eslint/eslint-plugin": "^4.17.0",
+        "@typescript-eslint/parser": "^4.17.0",
+        "eslint": "7.32.0",
+        "eslint-config-next": "11.1.2",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-react": "^7.26.1",
+        "eslint-plugin-react-hooks": "^4.2.0",
+        "prettier": "^2.2.1",
+        "typescript": "^4.4.3"
+    }
 }
