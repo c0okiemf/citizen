@@ -1,0 +1,37 @@
+{
+    "family": "citizen",
+    "networkMode": "bridge",
+    "containerDefinitions": [
+      {
+        "name": "citizen",
+        "image": "citizen:1",
+        "cpu": 0,
+        "memory": 400,
+        "memoryReservation": 100,
+        "links": [],
+        "portMappings": [
+          {
+            "containerPort": 9090,
+            "protocol": "tcp"
+          }
+        ],
+        "essential": true,
+        "mountPoints": [],
+        "volumesFrom": [],
+        "user": "root",
+        "hostname": "citizen",
+        "disableNetworking": false,
+        "privileged": true,
+        "readonlyRootFilesystem": false,
+        "dnsServers": [],
+        "dnsSearchDomains": [],
+        "extraHosts": [],
+        "dockerSecurityOptions": [],
+        "dockerLabels": {
+          "KeyName": "citizen"
+        },
+        "ulimits": []
+      }
+    ],
+    "volumes": []
+  }
