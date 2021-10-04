@@ -11,7 +11,7 @@
         "links": [],
         "portMappings": [
           {
-            "containerPort": 9090,
+            "containerPort": 3000,
             "protocol": "tcp"
           }
         ],
